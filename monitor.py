@@ -2,7 +2,7 @@ import psutil
 import json
 import argparse
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Parse command-line arguments for dynamic threshold configuration
 def parse_args():
@@ -35,7 +35,7 @@ def check_health(metrics, thresholds):
     
     # Check each metric against its configured threshold
     if metrics['cpu_percent'] > thresholds.cpu_threshold:
-        alerts.append(f"CPU usage high: {metrics['memory_percent']}%")
+        alerts.append(f"CPU usage high: {metrics['cpu_percent']}%")
     if metrics['memory_percent'] > thresholds.memory_threshold:
         alerts.append(f"Memory usage high: {metrics['memory_percent']}%")
     if metrics['disk_percent'] > thresholds.disk_threshold:
@@ -54,7 +54,7 @@ def main():
     
     # structure output as json for easy consumption by monitoring systems
     output = {
-        'timestamp': datetime.utcnow().isoformat() + 'Z',
+        'timestamp': datetime.now(timezone.utc).isoformat(),
         'status': status,
         'metrics': metrics,
         'alerts': alerts
